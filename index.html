@@ -170,8 +170,8 @@ window.onload = () => {
   const consent = localStorage.getItem("cookie_consent");
 
   if (!consent) {
-    const ok = confirm("This stores your note in cookies. Allow it?");
-    if (ok) localStorage.setItem("cookie_consent", "yes");
+    const ok = confirm("Cookies save your shit so yes or no");
+    if (ok) localStorage.setItem("cookie_consent", "Yes");
     else return;
   }
 
