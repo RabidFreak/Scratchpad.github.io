@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scratchpad</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #000000;
+  --surface: #0c0c0c;
+  --surface2: #141414;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.22);
+  --accent: #7fffb2;
+  --accent2: #5bffe4;
+  --accent3: #ff6b6b;
+  --text: #f0f0f0;
+  --muted: #606060;
+  --muted2: #2a2a2a;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2.5rem;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.nav-actions button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.nav-actions button:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+/* MAIN */
+main {
+  padding-top: 90px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* EDITOR */
+.editor {
+  width: 100%;
+  max-width: 900px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+
+.editor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.editor:focus-within::before {
+  transform: scaleX(1);
+}
+
+textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 1.5rem;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* FOOTER BAR */
+.footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.footer-bar span {
+  color: var(--muted2);
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-logo">Scratchpad</div>
+  <div class="nav-actions">
+    <button onclick="saveNote()">Save</button>
+    <button onclick="clearNote()">Clear</button>
+  </div>
+</nav>
+
+<main>
+  <div class="editor">
+    <textarea id="pad" placeholder="Write something..."></textarea>
+    <div class="footer-bar">
+      <span>Stored in cookies</span>
+      <span id="status">idle</span>
+    </div>
+  </div>
+</main>
+
+<script>
+const COOKIE_NAME = "scratchpad_note";
+
+window.onload = () => {
+  const consent = localStorage.getItem("cookie_consent");
+
+  if (!consent) {
+    const ok = confirm("This stores your note in cookies. Allow it?");
+    if (ok) localStorage.setItem("cookie_consent", "yes");
+    else return;
+  }
+
+  loadNote();
+
+  document.getElementById("pad").addEventListener("input", () => {
+    document.getElementById("status").textContent = "unsaved";
+  });
+};
+
+function setCookie(name, value, days = 365) {
+  const d = new Date();
+  d.setTime(d.getTime() + days*24*60*60*1000);
+  document.cookie = name + "=" + encodeURIComponent(value) +
+    ";expires=" + d.toUTCString() + ";path=/";
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : "";
+}
+
+function saveNote() {
+  const text = document.getElementById("pad").value;
+  setCookie(COOKIE_NAME, text);
+  document.getElementById("status").textContent = "saved";
+}
+
+function loadNote() {
+  const saved = getCookie(COOKIE_NAME);
+  if (saved) document.getElementById("pad").value = saved;
+}
+
+function clearNote() {
+  document.getElementById("pad").value = "";
+  setCookie(COOKIE_NAME, "", -1);
+  document.getElementById("status").textContent = "cleared";
+}
+</script>
+
+</body>
+</html>
