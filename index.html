@@ -5,7 +5,7 @@
 <title>Scratchpad</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+  
 <style>
 :root {
   --bg: #000000;
@@ -178,7 +178,7 @@ window.onload = () => {
   loadNote();
 
   document.getElementById("pad").addEventListener("input", () => {
-    document.getElementById("status").textContent = "unsaved";
+    document.getElementById("status").textContent = "Save ur shit";
   });
 };
 
@@ -208,7 +208,7 @@ function loadNote() {
 function clearNote() {
   document.getElementById("pad").value = "";
   setCookie(COOKIE_NAME, "", -1);
-  document.getElementById("status").textContent = "cleared";
+  document.getElementById("status").textContent = "Wipedout";
 }
 </script>
 
